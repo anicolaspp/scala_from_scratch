@@ -215,6 +215,24 @@ res2: Int = 42
 ```
 
 
+### Equality
+
+
+### Collections
+
+#### List
+
+#### Set
+
+#### Map
+
+### Recursion
+
+### Bread and Butter List Functions
+
+### 
+
+
 ###
 
 ## References
