@@ -214,21 +214,83 @@ scala> F.x
 res2: Int = 42
 ```
 
+### Case Classes
+
+
 
 ### Equality
 
+* Use `==` to compare value (stack) or reference types (heap)
+* `==` "routes to .equals, except that it treats nulls properly" (http://stackoverflow.com/a/7681243/409976)
+* To compare objects via "reference equality," use `eq` (rarely used)
+
+#### Value Types
+
+* scala.Double, scala.Float, scala.Long, scala.Int, scala.Char, scala.Short, and scala.Byte are the numeric value types.
+* scala.Unit and scala.Boolean
+  -http://www.scala-lang.org/api/2.12.x/scala/AnyVal.html
+
+#### Reference Types
+
+* objects that are `new`'d, i.e. stored on the heap
+
+#### `==` Examples
+
+```
+42 == 42 // outputs true
+
+// Recall that case classes provide a reasonable
+// 'equals' implementation
+case class Person(id: Long, name: String)
+Person(42, "Joe") == Person(42, "Joe") // outputs true
+```
 
 ### Collections
 
-#### List
+#### List - `List[A]`
 
-#### Set
+* Linked List (https://en.wikipedia.org/wiki/Linked_list)
 
-#### Map
+- [1] --> [2] --> [3] --> Nil (termination of list)
+
+* The `bread` in bread and butter of Scala and Functional Programming
+* Bunch of elements with constant prepend, i.e. add to head, but linear append, add to tail
+
+```
+1 :: List[Int](2,3) // prepend
+List[Int](2,3) :+ 4 // append
+```
+
+#### Set - `Set[A]`
+
+* Collection of elements that contains no duplicates
+* Calling `Set(1,2,3)` in Scala will, by default, use a `HashSet`.
+* `HashSet` uses a Hash Trie (http://docs.scala-lang.org/overviews/collections/concrete-immutable-collection-classes.html#hash_tries)
+  * Ensures a "reasonably fast lookups and reasonably efficient functional insertions and deletions"
+
+```
+Set[Int](1,2,3)
+```
+
+#### Map - `Map[K, V]`
+
+* Consists of key-value pairs
+
+```
+val map = Map[Int, String]( (1, "hello"), (2, "world") )
+map.get(1)  // returns Some("hello")
+map.get(42) // returns None
+```
+
+### Bread and Butter List Functions
+
+* `map`
+* `filter`
+* `foldLeft`
+* `foldRight`
 
 ### Recursion
 
-### Bread and Butter List Functions
 
 ### 
 
