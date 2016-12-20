@@ -282,15 +282,65 @@ map.get(1)  // returns Some("hello")
 map.get(42) // returns None
 ```
 
+### Recursion
+
+* "Recursion occurs when a thing is defined in terms of itself or of its type."
+  * https://en.wikipedia.org/wiki/Recursion
+
+```
+def factorial(n: Int): Int = {
+  if (n < 0)       throw new RuntimeException("Invalid input. Must be >= 0.")
+  else if (n == 0) 1 
+  else             n * factorial(n - 1)
+}
+```
+
+Let's break down `factorial(3)`:
+
+```
+factorial(3) 
+3 * factorial(2)
+3 * 2 * factorial(1)
+3 * 2 * 1 * factorial(0)
+3 * 2 * 1 * 1
+```
+
+Let's look at a possible implementation using Java:
+
+```
+public static int factorial(int x) {
+  int start = 1;
+
+  if(x < 0) {
+    throw new RuntimeException("Invalid input. Must be >= 0.")
+  }
+  else {
+    while(x != 0) {
+      start = x * start;
+      x--;
+    }
+    return start;
+  }
+}
+```
+
+* We cannot reason about the Java `factorial` method in the same way
+* It's necessary to keep track of state, i.e. `start`
+
 ### Bread and Butter List Functions
 
 * `map`
+
+```
+def map[A](list: List[A], f: A => B): List[B] = list match {
+   case x :: xs => f(x) :: map(xs, f) 
+   case Nil     => Nil
+}
+```
+
 * `filter`
 * `foldLeft`
 * `foldRight`
-
-### Recursion
-
 
 ### 
 
