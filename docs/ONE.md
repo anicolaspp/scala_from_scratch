@@ -4,11 +4,19 @@
 
 ### Agenda
 
+* REPL
 * `var` versus `val`
 * Class
 * Object
+* Trait
 * Case Class
-* ...
+* Collections
+* Try, Option, and Either
+
+### REPL
+
+* Read-Eval-Print-Loop
+* Very useful for understanding code
 
 ### `var` versus `val`
 
@@ -122,6 +130,58 @@ x.increment.decrement
 * To make it private, remove `val` 
 * Observe that there's no `()` appended to each method's name
 
+### Abstract Class
+
+* Cannot be directly instantiated
+* Has constructor parameters
+* Can define fields and methods
+
+```
+// http://docs.oracle.com/javase/tutorial/java/IandI/abstract.html
+abstract class GraphicObject() {
+  def draw(): Unit
+}
+```
+
+### Trait
+
+* Similar to a Java `Interface`, but it can:
+  * Define fields and implement methods
+  * "Unlike class inheritance, in which each class must inherit from just
+    one superclass, a class can mix in any number of traits" (Prog in Scala, 3rd edition).
+* No parameters allowed
+
+```
+trait HasBrain {
+  def intelligentQuote: String
+}
+
+trait HasMouth {
+  def talk: String 
+}
+```
+
+```
+class Human extends HasBrain with HasMouth {
+  override def intelligentQuote = "I think, therefore I am."
+
+  override def talk = "blah blah blah"
+}
+
+class Dog extends HasBrain with HasMouth {
+  override def intelligentQuote = "my owner is home - time to eat!"
+
+  override def talk = "woof"
+}
+```
+
+* "If the behavior will not be reused, then make it a concrete class. It is not
+  reusable behavior after all.
+  If it might be reused in multiple, unrelated classes, make it a trait. Only
+  traits can be mixed into different parts of the class hierarchy.
+  If you want to inherit from it in Java code, use an abstract class" (Prog in Scala, 3rd edition).
+
+
 ### Object
 
 * Unlike Java, Scala does not have `static` members.
@@ -216,7 +276,72 @@ res2: Int = 42
 
 ### Case Classes
 
+* Immutable by default
+* Decomposable through pattern matching
+* Compared by structural equality instead of by reference
+* Succinct to instantiate and operate on
 
+- http://docs.scala-lang.org/tutorials/tour/case-classes.html
+
+```
+case class Person(name: String, age: Int)
+```
+
+```
+// Java implementation, but missing features of case classes
+public class Person {
+  private final String name;
+  private final int age;
+
+  public Person(final String name, final int age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  @Override 
+  public boolean equals(Object o) {
+   final boolean result;
+
+    if(o instanceof Person) {
+      Person other = (Person) o;
+      result = this.name.equals(other.getName()) && this.age == other.getAge();
+    }
+    else {
+      result = false;
+    }
+    return result;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public int getAge() {
+    return this.age;
+  }
+```
+
+#### Immutable by Default
+
+```
+scala> case class F(a: Int) {
+     |   a = 666
+     | }
+<console>:12: error: reassignment to val
+         a = 666
+           ^
+```
+
+#### Decomposable through Pattern Matching
+
+```
+def namePlusAge(p: Person): String = p match {
+  case Person(name, age) => name + age.toString
+}
+
+scala>namePlusAge( Person("Jane", 33) )
+res4: String = Jane33
+```
 
 ### Equality
 
@@ -312,7 +437,7 @@ public static int factorial(int x) {
   int start = 1;
 
   if(x < 0) {
-    throw new RuntimeException("Invalid input. Must be >= 0.")
+    throw new RuntimeException("Invalid input. Must be >= 0.");
   }
   else {
     while(x != 0) {
@@ -332,10 +457,18 @@ public static int factorial(int x) {
 * `map`
 
 ```
-def map[A](list: List[A], f: A => B): List[B] = list match {
+def map[A, B](list: List[A], f: A => B): List[B] = list match {
    case x :: xs => f(x) :: map(xs, f) 
    case Nil     => Nil
 }
+```
+
+```
+scala> def add1(x: Int): Int = x + 1
+add1: (x: Int)Int
+
+scala> map( List(1,2,3), add1 )
+res3: List[Int] = List(2, 3, 4)
 ```
 
 * `filter`
