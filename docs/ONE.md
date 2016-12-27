@@ -452,6 +452,48 @@ public static int factorial(int x) {
 * We cannot reason about the Java `factorial` method in the same way
 * It's necessary to keep track of state, i.e. `start`
 
+### Currying
+
+* "technique of translating the evaluation of a function that takes multiple arguments ... 
+   into evaluating a sequence of functions, each with a single argument."
+   - https://en.wikipedia.org/wiki/Currying
+
+
+```
+def add2(x: Int, y: Int): Int = x + y 
+
+def add2Curried(x: Int)(y: Int): Int = x + y 
+```
+
+```
+scala> add2Curried(5)(_)
+res11: Int => Int = ...
+
+scala> res11(10)
+res12: Int = 15
+
+scala> res11(42)
+res13: Int = 47
+
+```
+
+### Partial Application
+
+```
+def add2(x: Int, y: Int): Int = x + y
+
+scala> val partiallyApplied: Int => Int = add2(10, _)
+partiallyApplied: Int => Int = ...
+
+scala> partiallyApplied(10)
+res14: Int = 20
+
+scala> partiallyApplied(5)
+res15: Int = 15
+```
+
+
+
 ### Bread and Butter List Functions
 
 * `map`
@@ -472,8 +514,24 @@ res3: List[Int] = List(2, 3, 4)
 ```
 
 * `filter`
+
+```
+def filter[A](list: List[A], pred: A => Boolean): List[A] = list match {
+   case x :: xs => if ( pred(x) ) x :: filter(xs, pred) else filter(xs, pred)
+   case Nil     => Nil
+}
+```
+
+```
+scala> def even(x: Int): Boolean = (x % 2) == 0
+even: (x: Int)Boolean
+
+
+scala> filter( List(1,2,3), even )
+res3: List[Int] = List(2)
+```
+
 * `foldLeft`
-* `foldRight`
 
 ### 
 
