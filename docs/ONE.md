@@ -558,6 +558,28 @@ res20: Int = 6
 
 ```
 
+### Try, Option and Either
+
+* `Try` is a data structure that encapsulates the `Success`
+   and `Failure`, i.e. threw a non-fatal exceptionm cases.
+
+```
+sealed trait Try[+A]
+case class Success[+A](value: A) extends Try[A]
+case class Failure(t: Throwable) extends Try[Nothing] 
+```
+
+```
+import scala.util.{Try, Success, Failure}
+
+Try { "42".toInt } match {
+  case Success(int) => s"converted to int: $int"
+  case Failure(_)   => "not an int"
+}
+```
+
+
+
 ## References
 
 * Programming in Scala, 3rd Edition; (Odersky, Spoon, and Venners)
