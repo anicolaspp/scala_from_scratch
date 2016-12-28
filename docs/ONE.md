@@ -492,8 +492,6 @@ scala> partiallyApplied(5)
 res15: Int = 15
 ```
 
-
-
 ### Bread and Butter List Functions
 
 * `map`
@@ -533,10 +531,32 @@ res3: List[Int] = List(2)
 
 * `foldLeft`
 
-### 
+```
+def foldLeft[A, B](xs: List[A])(accumulator: B)(f: (B, A) => B): B = xs match {
+  case x :: xs => foldLeft( xs )( f(accumulator, x) )( f )
+  case Nil     => accumulator
+}
+```
 
+```
+scala> def add(x: Int, y: Int): Int = x + y
+add: (x: Int, y: Int)Int
 
-###
+scala> List(1,2,3).foldLeft(0)(add)
+res20: Int = 6
+```
+
+```
+0 - foldLeft( List(1,2,3) )( 0 )       (add) 
+1 - foldLeft( List(2,3)   )( add(0, 1))(add)
+2 - foldLeft( List(2,3)   )( 1 )       (add)
+3 - foldLeft( List(3)     )( add(1, 2))(add)
+4 - foldLeft( List(3)     )(3)         (add)
+5 - foldLeft( List()      )( add(3, 3))(add)
+6 - foldLeft( List()      )( 6 )       (add)
+7 - 6 // complete
+
+```
 
 ## References
 
