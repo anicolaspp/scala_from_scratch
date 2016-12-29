@@ -558,6 +558,23 @@ res20: Int = 6
 
 ```
 
+* `find`
+
+```
+def find[A](list: List[A], pred: A => Boolean): Option[A] = 
+  list.foldLeft[Option[A]](None) { (acc: Option[A], elem: A) => 
+    acc.orElse {
+      if( pred(elem) ) Some(elem) else None
+    }
+  }
+  
+scala> find(List(1,2,3), { x: Int => x == 3 } )
+res5: Option[Int] = Some(3)
+
+scala> find(List(1,2,3), { x: Int => x == 42 } )
+res6: Option[Int] = None
+```
+
 ### Try, Option and Either
 
 * `Try` is a data structure that encapsulates the `Success`
@@ -572,12 +589,54 @@ case class Failure(t: Throwable) extends Try[Nothing]
 ```
 import scala.util.{Try, Success, Failure}
 
-Try { "42".toInt } match {
-  case Success(int) => s"converted to int: $int"
-  case Failure(_)   => "not an int"
-}
+scala> Try { "42".toInt } match {
+     |   case Success(int) => s"converted to int: $int"
+     |   case Failure(_)   => "not an int"
+     | }
+res22: String = converted to int: 42
+
+scala> Try { "foobar".toInt } match {
+     |   case Success(int) => s"converted to int: $int"
+     |   case Failure(_)   => "not an int"
+     | }
+res23: String = not an int
 ```
 
+* "This method will ensure any non-fatal exception is caught and a Failure object is returned."
+  - http://www.scala-lang.org/api/2.11.8/#scala.util.Try$
+  * "Will not match fatal errors like VirtualMachineError (for example, OutOfMemoryError and StackOverflowError, ..."
+    - http://www.scala-lang.org/api/2.11.8/#scala.util.control.NonFatal$
+
+```
+scala> Try { throw new OutOfMemoryError("!") } match {
+     |   case Success(a) => "good"
+     |   case Failure(t) => "bad"
+     | }
+java.lang.OutOfMemoryError: !
+```
+
+* Option is a data structure that represents the presence
+  or absence of a value.
+* Superior alternative to `null`
+
+```
+sealed trait Option[+A]
+case class Some[+A](x: A) extends Option[A]
+case object None extends Option[Nothing]
+```
+
+```
+case class Person(id: Long)
+
+def find(persons: List[Person], id: Long): Option[Person] = 
+  persons.find(_.id == id)
+
+scala> find( List(Person(42)), 42 )
+res0: Option[Person] = Some(Person(42))
+
+scala> find( List(Person(1)), 66 )
+res2: Option[Person] = None
+```
 
 
 ## References
