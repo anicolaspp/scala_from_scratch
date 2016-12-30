@@ -7,11 +7,19 @@
 * REPL
 * `var` versus `val`
 * Class
-* Object
+* Abstract Class
 * Trait
+* Object
+* How to Run a Program
 * Case Class
+* Equality
 * Collections
+* Recursion
+* Currying
+* Partial Application
+* Bread and Butter List Functions
 * Try, Option, and Either
+* Programming with Types
 
 ### REPL
 
@@ -234,7 +242,7 @@ class A {
 * "If you are a Java programmer, one way to think of singleton objects is
    as the home for any static methods you might have written in Java" (Prog in Scala).
 
-#### Creating a `main`
+### How to Run a Program
 
 ```
 object Foo {
@@ -670,11 +678,12 @@ scala> divPositiveByN(10, 10)
 res11: Either[DivError,Int] = Right(1)
 ```
 
-### Developing with Types
+### Programming with Types
 
-* Detecting Errors
-* Abstraction
-* Documentation 
+* Benefits
+  * Detecting Errors
+  * Abstraction
+  * Documentation 
 
 * `???`
   * can be used for marking methods that remain to be implemented.
@@ -686,20 +695,23 @@ case class User(id: Long)
 
 object UserRepository {
   sealed trait UserLookupError
-  case object NegativeId                 extends UserLookupError
   case class DbLookupError(t: Throwable) extends UserLookupError
 
   sealed trait FailedDeleteUser
-  case object NegativeId                 extends UserLookupError
-  case object UserNotFound               extends UserLookupError
-  case class DbDeleteError(t: Throwable) extends UserLookupError
+  case object UserNotFound               extends FailedDeleteUser
+  case class DbDeleteError(t: Throwable) extends FailedDeleteUser
+
+
+  case object NegativeId extends UserLookupError with FailedDeleteUser
 }
 trait UserRepository {
-  def find(id: Long): Either[UserLookupError, Option[Person]] = ???
+  import UserRepository._
+
+  def find(id: Long): Either[UserLookupError, Option[User]] = ???
 
   def delete(id: Long): Either[FailedDeleteUser, Unit]        = ???
 }
-
+```
 
 ## References
 
