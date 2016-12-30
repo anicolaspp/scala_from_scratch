@@ -567,7 +567,7 @@ def find[A](list: List[A], pred: A => Boolean): Option[A] =
       if( pred(elem) ) Some(elem) else None
     }
   }
-  
+
 scala> find(List(1,2,3), { x: Int => x == 3 } )
 res5: Option[Int] = Some(3)
 
@@ -637,6 +637,68 @@ res0: Option[Person] = Some(Person(42))
 scala> find( List(Person(1)), 66 )
 res2: Option[Person] = None
 ```
+
+* Either - has two states: `Left` and `Right`
+  * When representing success and failure states, `Left`, by convention
+    represents the failure case
+* More detailed (and better in my experience) choice for handling failures
+
+```
+sealed trait Either[+A, +B]
+case class Right[B](x: B) extends Either[Nothing, B]
+case class Left[A](x: A)  extends Either[A, Nothing]
+```
+
+```
+sealed trait DivError
+case object NegativeNumber extends DivError
+case object DivByZero      extends DivError
+
+def divPositiveByN(input: Int, n: Int): Either[DivError, Int] = {
+  if (n < 0)       Left(NegativeNumber)
+  else if (n == 0) Left(DivByZero)
+  else             Right( input / n )
+}
+
+scala> divPositiveByN(10, -3)
+res9: Either[DivError,Int] = Left(NegativeNumber)
+
+scala> divPositiveByN(10, 0)
+res10: Either[DivError,Int] = Left(DivByZero)
+
+scala> divPositiveByN(10, 10)
+res11: Either[DivError,Int] = Right(1)
+```
+
+### Developing with Types
+
+* Detecting Errors
+* Abstraction
+* Documentation 
+
+* `???`
+  * can be used for marking methods that remain to be implemented.
+    http://www.scala-lang.org/api/2.11.8/index.html#scala.Predef$@???:Nothing
+
+
+```
+case class User(id: Long)
+
+object UserRepository {
+  sealed trait UserLookupError
+  case object NegativeId                 extends UserLookupError
+  case class DbLookupError(t: Throwable) extends UserLookupError
+
+  sealed trait FailedDeleteUser
+  case object NegativeId                 extends UserLookupError
+  case object UserNotFound               extends UserLookupError
+  case class DbDeleteError(t: Throwable) extends UserLookupError
+}
+trait UserRepository {
+  def find(id: Long): Either[UserLookupError, Option[Person]] = ???
+
+  def delete(id: Long): Either[FailedDeleteUser, Unit]        = ???
+}
 
 
 ## References
