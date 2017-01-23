@@ -20,6 +20,12 @@
 * Bread and Butter List Functions
 * Try, Option, and Either
 * Programming with Types
+* Deeper look at Functor and Monad
+  * Implement our own `map[A, B](a: A, f: A => B): B`
+  * Implement our own `Option[T]`
+  * Looking at logs and monadic loggin
+  * Implement Monad `Writer`
+  * Looking at `Future[T]`
 
 ### REPL
 
